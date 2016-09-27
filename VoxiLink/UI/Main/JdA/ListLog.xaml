@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="VoxiLink.ListLog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoxiLink"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\..\Themes\Generic.xaml" />
+                <ResourceDictionary>
+                    <local:NullToVisibilityConverter x:Key="NullVisible"/>
+                    <local:NullToVisibilityNAConverter x:Key="NullNAVisible"/>
+                    <local:NullToHideConverter x:Key="NullCollapsed"/>
+
+                    <local:SensLogConverter x:Key="SensLog"/>
+                    <local:ColorLogConverter x:Key="ColorLog"/>
+                    <local:StatusLogConverter x:Key="StatusLog"/>
+                    <local:SourceDestConverter x:Key="SourceDest"/>
+
+                    <local:StatusDeviceConverter x:Key="StatusDevice"/>
+                    <local:DeviceEnabledConverter x:Key="DeviceEnabled"/>
+                    <local:StatusDeviceTranslationConverter x:Key="StatusDeviceTranslation"/>
+                    <local:UserDateConverter x:Key="TranslationDate"/>
+                    <local:TelToNameConverterLog x:Key="TelToName"/>
+
+                    <local:TranslationSecondConverter x:Key="TranslationSecond"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Name="grid_logs">
+        <Grid Grid.IsSharedSizeScope="True">
+            <!-- Look HERE -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="45" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <!--  Title  -->
+            <Grid Margin="21, 15, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColCorres"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColDuree"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColSens"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColStatus"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColDate"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColTag"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" SharedSizeGroup="ColDate"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Correspondant" HorizontalAlignment="Center" FontSize="22"/>
+                <TextBlock Grid.Column="2" Text="Durée" HorizontalAlignment="Center" Margin="-5,0,5,0" FontSize="22"/>
+                <TextBlock Grid.Column="4" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="6" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="8" Text="Date" HorizontalAlignment="Center" Margin="-26,0,26,0" FontSize="22"/>
+                <TextBlock Grid.Column="10" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="12" HorizontalAlignment="Center"/>
+            </Grid>
+            
+            <TextBlock x:Name="InitCtcTb" Grid.Row="1" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource VoxyTbS}">
+                <Run>Vous n'avez effectué encore aucun appel...</Run>
+                <LineBreak/>
+                <Run>Pour remédier à cela, appelez l'un de vos contacts ou bien utilisez le raccourcis définis dans les </Run>
+                <Hyperlink Foreground="{StaticResource VoxyPrimary}">paramètres</Hyperlink>
+                <Run>.</Run>
+                <LineBreak/>
+                <Run>Surlignez un numéro de téléphone et effectuez le raccourcis clavier pour débuter un appel.</Run>
+            </TextBlock>
+            <!-- Data -->
+            <ListBox x:Name="lb_allLogs" HorizontalContentAlignment="Stretch" Grid.Row="1" Background="Transparent" BorderBrush="{StaticResource VoxyBackground}" BorderThickness="1,0,1,1">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="grid_contactExpender" Width="{Binding ActualWidth, ElementName=grid_logs, Converter={local:ContentList}, ConverterParameter='1'}" Margin="21,8,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColCorres"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColDuree"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColSens"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColStatus"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColDate"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColTag"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" SharedSizeGroup="ColDate"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" HorizontalAlignment="Left" FontSize="22">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource SensLog}">
+                                            <Binding Path="source" />
+                                            <Binding Path="destination" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                    <TextBlock.Foreground>
+                                        <MultiBinding Converter="{StaticResource ColorLog}">
+                                            <Binding Path="source" />
+                                            <Binding Path="destination" />
+                                        </MultiBinding>
+                                    </TextBlock.Foreground>
+                                </TextBlock>
+                                <TextBlock HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" Margin="0" Foreground="{StaticResource VoxySecondary}" FontSize="22">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource SourceDest}">
+                                            <Binding Path="source"/>
+                                            <Binding Path="destination"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=duration}" HorizontalAlignment="Stretch">
+                                <TextBlock Text="&#xE9A5;" Margin="0,0,5,0" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbMediumS}"/>
+                                <TextBox Text="{Binding Converter={StaticResource TranslationSecond}, Path=duration}" Background="Transparent" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" MinWidth="20" Style="{StaticResource VoxyCtrlLargeS}"/>
+                            </StackPanel>
+                            <!--<StackPanel Grid.Column="4" Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullNAVisible}, Path=sens}" HorizontalAlignment="Stretch">
+                                <TextBlock Text="&#xE8AB;" Margin="0,0,5,0" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbMediumS}"/>
+                                <TextBox Text="{Binding sens}" Background="Transparent" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" MinWidth="20" Style="{StaticResource VoxyCtrlLargeS}"/>
+                            </StackPanel>-->
+                            <!--<StackPanel Grid.Column="6" Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullNAVisible}, Path=status}" HorizontalAlignment="Stretch">
+                                <TextBlock Text="&#xE83C;" Margin="0,0,5,0" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbMediumS}"/>
+                                <TextBox Text="{Binding status}" Background="Transparent" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" MinWidth="20" Style="{StaticResource VoxyCtrlLargeS}"/>
+                            </StackPanel>-->
+                            <StackPanel Grid.Column="8" Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=calldate}" HorizontalAlignment="Stretch">
+                                <TextBlock Text="&#xE987;" Margin="0,0,5,0" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbMediumS}"/>
+                                <TextBox Text="{Binding Converter={StaticResource TranslationDate}, Path=calldate}" Background="Transparent" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" MinWidth="20" Style="{StaticResource VoxyCtrlLargeS}"/>
+                            </StackPanel>
+                            <!--<StackPanel Grid.Column="10" Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullNAVisible}, Path=tag}" HorizontalAlignment="Stretch">
+                                <TextBlock Text="&#xE897;" Margin="0,0,5,0" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbMediumS}"/>
+                                <TextBox Text="{Binding tag}" Background="Transparent" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" MinWidth="20" Style="{StaticResource VoxyCtrlLargeS}"/>
+                            </StackPanel>-->
+                            <Button x:Name="btn_miniPhone" Grid.Column="12" Content="&#xE875;" Background="Transparent" Padding="0" BorderThickness="0" Margin="5,0,5,0" HorizontalAlignment="Right" FontSize="22" Click="btn_miniPhoneDevice_Click" FontFamily="{StaticResource VoxyPolicyAssets}" Foreground="{StaticResource VoxyValid}" Style="{StaticResource VoxyBtn}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Grid>
+</UserControl>

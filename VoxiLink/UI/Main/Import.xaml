@@ -1,0 +1,142 @@
+﻿<UserControl x:Class="VoxiLink.Import"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoxiLink"
+             mc:Ignorable="d" 
+             d:DesignHeight="3000" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Themes\Generic.xaml" />
+                <ResourceDictionary>
+                    <local:HideOneConverter x:Key="HideOne"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid x:Name="grid_selectImport" Visibility="Visible">
+            <Label Content="Importer des contacts" Margin="0, -2, 0, 0" VerticalAlignment="Stretch" Foreground="{StaticResource VoxyPrimary}" Style="{StaticResource VoxyCtrlHeaderS}"/>
+            <StackPanel Margin="21, 45, 0, 0">
+                <Label Content="Importez vos contacts depuis :" Margin="0,0,5,0" Style="{StaticResource VoxyCtrlLargeS}" />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="btn_other" Width="60" Height="80" HorizontalAlignment="Left" Margin="20" Padding="5" Click="btn_other_Click">
+                        <StackPanel>
+                            <TextBlock Text="+" FontSize="36" HorizontalAlignment="Center" Padding="12,0" Style="{StaticResource VoxyTbMediumS}"/>
+                            <TextBlock Text="CSV" FontSize="12" Style="{StaticResource VoxyTbS}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="btn_outlook" Width="60" Height="80" HorizontalAlignment="Left" Margin="0,20,0,20" Padding="5" Click="btn_outlook_Click">
+                        <StackPanel>
+                            <Image Source="../../Images/Icone/outlook.png" />
+                            <TextBlock Text="Outlook" FontSize="12" Style="{StaticResource VoxyTbS}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="btn_google" Width="60" Height="80" HorizontalAlignment="Left" Margin="20" Padding="5" Click="btn_google_Click">
+                        <StackPanel>
+                            <Image Source="../../Images/Icone/google.png" />
+                            <TextBlock Text="Google" FontSize="12" Style="{StaticResource VoxyTbS}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel x:Name="grid_file" Visibility="Collapsed">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Fichier choisi :" HorizontalAlignment="Right" Margin="0,0,0,15" FontSize="15" Style="{StaticResource VoxyCtrlS}"/>
+                        <Label Grid.Row="1" Content="Nom :" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="15" Style="{StaticResource VoxyCtrlS}"/>
+                        <Label Grid.Row="2" Content="Téléphone :" HorizontalAlignment="Right" FontSize="15" Style="{StaticResource VoxyCtrlS}"/>
+                        <Label Grid.Row="3" Content="Mobile :" HorizontalAlignment="Right" FontSize="15" Style="{StaticResource VoxyCtrlS}"/>
+                        <Label Grid.Row="4" Content="Mail :" HorizontalAlignment="Right" FontSize="15" Style="{StaticResource VoxyCtrlS}"/>
+
+                        <TextBlock x:Name="tb_fileName" Grid.Column="1" Text="Aucun" VerticalAlignment="Center" Margin="0,0,0,15" FontSize="15" Style="{StaticResource VoxyTbS}"/>
+
+                        <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,5,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <ComboBox x:Name="cb_nom" Width="100" Height="20" Margin="0,0,5,0" />
+                                <ComboBox x:Name="cb_prenom" Width="100"  Height="20"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Ex :" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                                <Label x:Name="lbl_name" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                                <Label x:Name="lbl_surname" HorizontalAlignment="Left" FontSize="12" Margin="-5,0,0,0" Style="{StaticResource VoxyCtrlS}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Grid.Row="2" Margin="0,5,0,0">
+                            <ComboBox x:Name="cb_tel" Width="100" Height="20" HorizontalAlignment="Left" />
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Ex :" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                                <Label x:Name="lbl_tel" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Grid.Row="3" Margin="0,5,0,0">
+                            <ComboBox x:Name="cb_mob" Width="100" Height="20" HorizontalAlignment="Left" />
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Ex :" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                                <Label x:Name="lbl_mob" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Grid.Row="4" Margin="0,5,0,0">
+                            <ComboBox x:Name="cb_mail" Width="100" Height="20" HorizontalAlignment="Left" />
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Ex :" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                                <Label x:Name="lbl_mail" HorizontalAlignment="Left" FontSize="12" Style="{StaticResource VoxyCtrlS}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <Button Name="btn_sync" Width="auto" HorizontalAlignment="Left" Padding="10,5" Margin="40,50,0,0" Click="btn_sync_Click">
+                        <TextBlock Text="Importer les contacts" Style="{StaticResource VoxyTbMediumS}"/>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="grid_import" Visibility="Collapsed">
+            <Label Content="Accueil de vos contacts" Margin="0, -2, 0, 0" VerticalAlignment="Stretch" Foreground="{StaticResource VoxyPrimary}" Style="{StaticResource VoxyCtrlHeaderS}"/>
+            <StackPanel Margin="21, 45, 21, 0">
+                <Label Content="Veuillez patienter un instant, nous accueillons vos contact..." Margin="0,0,5,0" FontSize="20" Foreground="#FF4C4C4C" Style="{StaticResource VoxyCtrlLargeS}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ProgressBar Name="pb_import" Value="0" Minimum="0" Height="20" Margin="5,5"/>
+                    <Button x:Name="btn_cancelContact" Grid.Column="1" Content="&#xE711;" HorizontalAlignment="Right" FontFamily="{StaticResource VoxyPolicyAssets}" Foreground="{StaticResource VoxyPrimary}" Style="{StaticResource VoxyBtn}"/>
+                </Grid>
+                <StackPanel x:Name="sp_contactError" Margin="10,0">
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource HideOne}, Path=ContactCsv}">
+                        <TextBlock Text="&#xE716;" Margin="0,2,0,0" HorizontalAlignment="Right" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbS}"/>
+                        <TextBlock Text="{Binding ContactCsv, StringFormat={}{0} contacts en file d\'attente}" Margin="5,0,0,0" HorizontalAlignment="Right" Style="{StaticResource VoxyTbS}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource HideOne}, Path=ContactQueue}">
+                        <TextBlock Text="&#xE716;" Margin="0,2,0,0" FontFamily="{StaticResource VoxyPolicyAssets}" HorizontalAlignment="Right" Style="{StaticResource VoxyTbS}"/>
+                        <TextBlock Text="{Binding ContactQueue, StringFormat={}{0} contacts en attente}" Foreground="{StaticResource VoxySend}" Margin="5,0,0,0" HorizontalAlignment="Right" Style="{StaticResource VoxyTbS}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource HideOne}, Path=ContactSuccess}">
+                        <TextBlock Text="&#xE716;" Margin="0,2,0,0" HorizontalAlignment="Right" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbS}"/>
+                        <TextBlock Text="{Binding ContactSuccess, StringFormat={}{0} contacts accueillis}" Foreground="{StaticResource VoxyValid}" Margin="5,0,0,0" HorizontalAlignment="Right" Style="{StaticResource VoxyTbS}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource HideOne}, Path=ContactFail}">
+                        <TextBlock Text="&#xE716;" Margin="0,2,0,0" HorizontalAlignment="Right" FontFamily="{StaticResource VoxyPolicyAssets}" Style="{StaticResource VoxyTbS}"/>
+                        <TextBlock Text="{Binding ContactFail, StringFormat={}{0} contacts réticents}" Foreground="{StaticResource VoxyPrimary}" Margin="5,0,0,0" HorizontalAlignment="Right" Style="{StaticResource VoxyTbS}"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

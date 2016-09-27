@@ -1,0 +1,251 @@
+﻿<UserControl x:Class="VoxiLink.Logs"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoxiLink"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Themes\Generic.xaml" />
+                <ResourceDictionary>
+                    <local:MyBoolToVisibilityConverter x:Key="MyBoolToVisibility"/>
+
+                    <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabControl}">
+                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TabPanel x:Name="HeaderPanel" Grid.Row="0" Panel.ZIndex="1" Margin="0,0,0,0" IsItemsHost="True" KeyboardNavigation.TabIndex="1" Background="transparent"/>
+                                        <Border x:Name="Border" Grid.Row="1" BorderThickness="0" KeyboardNavigation.TabNavigation="Local" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" BorderBrush="{StaticResource VoxyPrimary}" Background="Transparent">
+                                            <ContentPresenter x:Name="PART_SelectedContentHost" Margin="0" ContentSource="SelectedContent" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style x:Key="dgFocusVisualStyte" >
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Border x:Name="FocusStyle" Background="#4433b4ed" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+                        <Setter Property="FontSize" Value="22"/>
+                        <Setter Property="FontFamily" Value="{StaticResource VoxyPolicy}"/>
+                        <Setter Property="Foreground" Value="{StaticResource VoxyPrimary}"/>
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource dgFocusVisualStyte}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+
+                                    <Grid x:Name="Root">
+                                        <Grid.ColumnDefinitions>
+                                            <!-- 3 items headers so, we give (parent width * 0,nb of item header) -->
+                                            <ColumnDefinition Width="{Binding ActualWidth, ElementName=grid_log, Converter={local:ItemHeader}, ConverterParameter='0,333333333'}" MinWidth="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="6" />
+                                        </Grid.RowDefinitions>
+                                        <Border x:Name="Border"  Margin="0,0,0,0" Background="{StaticResource VoxyBackground}">
+                                            <ContentPresenter x:Name="ContentSite"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+                                          ContentSource="Header"
+                                          Margin="10,10,10,4"
+                                          RecognizesAccessKey="True"/>
+                                        </Border>
+
+                                        <Border Grid.Row="1" Background="{StaticResource VoxyBackground}"/>
+                                        <Border Grid.Row="1" Name="Border1Highlited" Background="Transparent"/>
+
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="100" />
+                                            <Setter TargetName="Border1Highlited" Property="Background" Value="{StaticResource VoxyPrimary}" />
+                                            <Setter Property="Foreground" Value="{StaticResource VoxyPrimary}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="Mes appels" Margin="0, -2, 0, 0" Foreground="{StaticResource VoxyPrimary}" Style="{StaticResource VoxyCtrlHeaderS}"/>
+            <Button x:Name="btn_refresh" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE929;" FontSize="16" Background="Transparent" BorderThickness="0" Padding="5" Foreground="{StaticResource VoxyPrimary}" Style="{StaticResource VoxyBtn}" Click="btn_refresh_Click" />
+        </StackPanel>
+        <Grid x:Name="grid_log" Grid.Row="1" Margin="25,10">
+            <TabControl Style="{StaticResource TabControlStyle}">
+                <TabItem Header="{Binding all_logs.Count}" HeaderStringFormat="Tous ({0})">
+                    <TabItem.Style>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="FontSize" Value="22"/>
+                            <Setter Property="FontFamily" Value="{StaticResource VoxyPolicy}"/>
+                            <Setter Property="Foreground" Value="{StaticResource VoxyPrimary}"/>
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource dgFocusVisualStyte}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabItem}">
+
+                                        <Grid x:Name="Root">
+                                            <Grid.ColumnDefinitions>
+                                                <!-- 3 items headers so, we give (parent width * 0,nb of item header) -->
+                                                <ColumnDefinition Width="{Binding ActualWidth, ElementName=grid_log, Converter={local:ItemHeader}, ConverterParameter='0,25'}" MinWidth="80"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*" />
+                                                <RowDefinition Height="6" />
+                                            </Grid.RowDefinitions>
+                                            <Border x:Name="Border"  Margin="0,0,0,0" Background="{StaticResource VoxyBackground}">
+                                                <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10,10,10,4" RecognizesAccessKey="True"/>
+                                            </Border>
+
+                                            <Border Grid.Row="1" Background="{StaticResource VoxyBackground}"/>
+                                            <Border Grid.Row="1" Name="Border1Highlited" Background="Transparent"/>
+
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Panel.ZIndex" Value="100" />
+                                                <Setter TargetName="Border1Highlited" Property="Background" Value="{StaticResource VoxyValid}" />
+                                                <Setter Property="Foreground" Value="{StaticResource VoxyValid}" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabItem.Style>
+                    <local:ListLog x:Name="all"/>
+                </TabItem>
+
+                <TabItem Header="{Binding emit_logs.Count}" HeaderStringFormat="Émis ({0})">
+                    <TabItem.Style>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="FontSize" Value="22"/>
+                            <Setter Property="FontFamily" Value="{StaticResource VoxyPolicy}"/>
+                            <Setter Property="Foreground" Value="{StaticResource VoxyPrimary}"/>
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource dgFocusVisualStyte}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TabItem}">
+
+                                            <Grid x:Name="Root">
+                                                <Grid.ColumnDefinitions>
+                                                    <!-- 3 items headers so, we give (parent width * 0,nb of item header) -->
+                                                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=grid_log, Converter={local:ItemHeader}, ConverterParameter='0,25'}" MinWidth="80"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="6" />
+                                                </Grid.RowDefinitions>
+                                                <Border x:Name="Border"  Margin="0,0,0,0" Background="{StaticResource VoxyBackground}">
+                                                    <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="10,10,10,4"
+                                              RecognizesAccessKey="True"/>
+                                                </Border>
+
+                                                <Border Grid.Row="1" Background="#77F8F8F8"/>
+                                                <Border Grid.Row="1" Name="Border1Highlited" Background="Transparent"/>
+
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Panel.ZIndex" Value="100" />
+                                                    <Setter TargetName="Border1Highlited" Property="Background" Value="{StaticResource VoxyEmit}" />
+                                                <Setter Property="Foreground" Value="{StaticResource VoxyEmit}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TabItem.Style>
+                        <local:ListLog x:Name="emit"/>
+                    </TabItem>
+
+                    <TabItem Header="{Binding rcv_logs.Count}" HeaderStringFormat="Reçu ({0})">
+                        <TabItem.Style>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="FontSize" Value="22"/>
+                            <Setter Property="FontFamily" Value="{StaticResource VoxyPolicy}"/>
+                            <Setter Property="Foreground" Value="{StaticResource VoxyPrimary}"/>
+                            <Setter Property="FocusVisualStyle" Value="{StaticResource dgFocusVisualStyte}"/>
+                            <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TabItem}">
+
+                                            <Grid x:Name="Root">
+                                                <Grid.ColumnDefinitions>
+                                                    <!-- 3 items headers so, we give (parent width * 0,nb of item header) -->
+                                                    <ColumnDefinition Width="{Binding ActualWidth, ElementName=grid_log, Converter={local:ItemHeader}, ConverterParameter='0,25'}" MinWidth="80"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="6" />
+                                                </Grid.RowDefinitions>
+                                                <Border x:Name="Border"  Margin="0,0,0,0" Background="{StaticResource VoxyBackground}">
+                                                    <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              ContentSource="Header"
+                                              Margin="10,10,10,4"
+                                              RecognizesAccessKey="True"/>
+                                                </Border>
+
+                                            <Border Grid.Row="1" Background="{StaticResource VoxyBackground}"/>
+                                                <Border Grid.Row="1" Name="Border1Highlited" Background="Transparent"/>
+
+                                            </Grid>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Panel.ZIndex" Value="100" />
+                                                    <Setter TargetName="Border1Highlited" Property="Background" Value="{StaticResource VoxySend}" />
+                                                <Setter Property="Foreground" Value="{StaticResource VoxySend}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TabItem.Style>
+                        <local:ListLog x:Name="rcv"/>
+                    </TabItem>
+                </TabControl>
+
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=grid_log, Converter={local:ItemHeader}, ConverterParameter='0,25'}" Height="50">
+                <TextBlock Text="Recherche" Margin="8,0" MinWidth="50" Foreground="Black" Visibility="{Binding ElementName=tb_search_log, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibility}}" Style="{StaticResource VoxyTbMediumS}"/>
+                <TextBox x:Name="tb_search_log" FontSize="20" Padding="5,0,0,0" TextChanged="tb_search_log_TextChanged" VerticalContentAlignment="Center" Background="{StaticResource VoxyBackground}" Style="{StaticResource VoxyCtrlS}"/>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</UserControl>

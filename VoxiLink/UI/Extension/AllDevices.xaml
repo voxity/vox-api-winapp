@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="VoxiLink.AllDevices"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoxiLink"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Themes\Generic.xaml" />
+                <ResourceDictionary>
+                    <local:NullToVisibilityConverter x:Key="NullVisible"/>
+                    <local:NullToHideConverter x:Key="NullCollapsed"/>
+
+                    <local:StatusDeviceConverter x:Key="StatusDevice"/>
+                    <local:DeviceEnabledConverter x:Key="DeviceEnabled"/>
+                    <local:StatusDeviceTranslationConverter x:Key="StatusDeviceTranslation"/>
+                    <local:TranslationDateConverter x:Key="TranslationDate"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Name="grid_devices">
+        <TextBlock x:Name="InitTelTb" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource VoxyTbS}">
+            <Run>Aucune ligne n'a encore été trouvée.</Run>
+            <LineBreak/>
+            <Run>Assurez-vous que vos postes soient enrgistrés au près de Voxity.</Run>
+        </TextBlock>
+        <ListBox x:Name="lb_allDevices" HorizontalContentAlignment="Stretch" Grid.Row="1" Background="Transparent" BorderBrush="Transparent" Margin="0,10,0,0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Expander Name="expender" FlowDirection="RightToLeft" ExpandDirection="Down" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid x:Name="grid_contactExpender" FlowDirection="LeftToRight" Width="{Binding ActualWidth, ElementName=grid_devices, Converter={local:ContentList}, ConverterParameter='1'}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" HorizontalAlignment="Left" Foreground="{Binding Converter={StaticResource StatusDevice}, Path=state}">&#xE90E;</TextBlock>
+                                <TextBlock Grid.Column="1" Text="{Binding extension}" HorizontalAlignment="Stretch" Margin="0" Foreground="{StaticResource VoxySecondary}"/>
+                                <Button x:Name="btn_miniPhone" Grid.Column="2" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE875;" Foreground="{StaticResource VoxyValid}" Background="{x:Null}" Padding="0" BorderThickness="0" Margin="5,0,5,0" Click="btn_miniPhoneDevice_Click" HorizontalAlignment="Stretch" Visibility="{Binding Converter={StaticResource DeviceEnabled}, Path=state}" Style="{StaticResource VoxyBtn}" FontSize="18"/>
+                            </Grid>
+                        </Expander.Header>
+                        <Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Width="{Binding ActualWidth, ElementName=grid_contactExpender, Converter={local:ItemHeader}, ConverterParameter='1'}" FlowDirection="LeftToRight" HorizontalAlignment="Left" Visibility="Visible">
+                                    <StackPanel x:Name="sp_contactRead" Visibility="Visible">
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=state}" VerticalAlignment="Center">
+                                            <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}">&#xE9E9;</TextBlock>
+                                            <TextBox Text="{Binding Converter={StaticResource StatusDeviceTranslation}, Path=state_desc}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="Segoe UI Light" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=last_update}">
+                                            <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}">&#xE929;</TextBlock>
+                                            <TextBox Text="{Binding Converter={StaticResource TranslationDate}, Path=last_update}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="Segoe UI Light" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Expander>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</UserControl>

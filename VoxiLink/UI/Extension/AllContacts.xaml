@@ -1,0 +1,497 @@
+﻿<UserControl x:Class="VoxiLink.AllContacts"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoxiLink"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Themes\Generic.xaml" />
+                <ResourceDictionary>
+                    <local:NullToVisibilityConverterAdmin x:Key="NullVisibleAdmin"/>
+                    <local:NullToVisibilityConverterIsAdmin x:Key="NullVisibleIsAdmin"/>
+                    <local:NullToVisibilityConverter x:Key="NullVisible"/>
+                    <local:NullToHideConverterAdmin x:Key="NullCollapsedAdmin"/>
+                    <local:NullToHideConverter x:Key="NullCollapsed"/>
+                    <local:NullToDisabled x:Key="NullToDisabled"/>
+                    <local:EditAdmin x:Key="EditAdmin"/>
+                    <local:ThicknessEditAdmin x:Key="ThicknessEditAdmin"/>
+                    <local:FavIcon x:Key="FavIcon"/>
+                    <local:FavColor x:Key="FavColor"/>
+                    <local:MyBoolToVisibilityConverter x:Key="MyBoolToVisibility"/>
+                    <local:ValidMailConverter x:Key="ValidMail"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Name="grid_contact">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Search toolbar -->
+        <Grid Margin="0,5,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btn_refresh" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE929;" FontSize="16" Background="Transparent" BorderThickness="1,1,0,1" Padding="2,0" Foreground="{StaticResource VoxyPrimary}" Click="btn_refresh_Click" Style="{StaticResource VoxyBtn}"/>
+            <Grid Grid.Column="1" >
+                <TextBlock Text="Trouver un contact..." Margin="4,0" Foreground="{StaticResource VoxySecondary}" Opacity="0.6" Visibility="{Binding ElementName=tb_searchContact, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibility}}" Style="{StaticResource VoxyTbS}"/>
+                <TextBox x:Name="tb_searchContact" Grid.Column="1"  BorderThickness="1" FontSize="16" Background="{StaticResource VoxyBackground}" Style="{StaticResource VoxyCtrlS}" TextChanged="tb_searchContact_TextChanged"/>
+            </Grid>
+            <Button x:Name="btn_sort" Grid.Column="2" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE95E;" FontSize="16" Foreground="{StaticResource VoxyPrimary}" Background="Transparent" BorderThickness="0" Margin="0,0,2,0" HorizontalAlignment="Right" Click="btn_sort_Click" CommandParameter="Ascending" Style="{StaticResource VoxyBtn}"/>
+        </Grid>
+
+        <TextBlock x:Name="InitCtcTb" Grid.Row="1" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Style="{StaticResource VoxyTbS}">
+            <Run>Aucun contact n'a encore été trouvé.</Run>
+            <LineBreak/>
+            <Run>Vous pouvez dès à présent en ajouter ou bien en importer via le menu  </Run>
+        <Hyperlink Foreground="{StaticResource VoxyPrimary}">Ajouter un contact</Hyperlink>
+        </TextBlock>
+        
+        <!-- Contact List -->
+        <ListBox x:Name="lb_allContact" HorizontalContentAlignment="Stretch" Grid.Row="1" Background="Transparent" BorderBrush="Transparent">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Expander Name="expender" FlowDirection="RightToLeft" ExpandDirection="Down" HorizontalAlignment="Left" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid x:Name="grid_contactExpender" FlowDirection="LeftToRight" Width="{Binding ActualWidth, ElementName=grid_contact, Converter={local:ContentList}, ConverterParameter='1'}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" HorizontalAlignment="Left" Foreground="{Binding Converter={StaticResource FavColor}, Path=IsFav}">&#xE8A9;</TextBlock>
+                                <TextBlock Grid.Column="1" Text="{Binding Contact.cn}" HorizontalAlignment="Stretch" TextTrimming="CharacterEllipsis" Margin="0" Foreground="{StaticResource VoxySecondary}"/>
+                                <Button x:Name="btn_miniPhone" Grid.Column="2" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE875;" Foreground="{StaticResource VoxyValid}" Background="{x:Null}" Padding="0" BorderThickness="0" Margin="5,0,5,0" IsEnabled="{Binding Converter={StaticResource NullToDisabled}, Path=Contact.telephoneNumber}" Click="btn_miniPhone_Click" HorizontalAlignment="Stretch" Visibility="{Binding Converter={StaticResource NullCollapsed}, Path=Contact.telephoneNumber}" Style="{StaticResource VoxyBtn}" FontSize="18"/>
+                                <Button x:Name="btn_miniMobile" Grid.Column="3" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE97D;" Foreground="{StaticResource VoxyValid}" Background="{x:Null}" Padding="0" BorderThickness="0" IsEnabled="{Binding Converter={StaticResource NullToDisabled}, Path=Contact.mobile}" Click="btn_miniMobile_Click" HorizontalAlignment="Stretch" Visibility="{Binding Converter={StaticResource NullCollapsed}, Path=Contact.mobile}" Style="{StaticResource VoxyBtn}" FontSize="18"/>
+                            </Grid>
+                        </Expander.Header>
+                        <Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Width="{Binding ActualWidth, ElementName=grid_contactExpender, Converter={local:ItemHeader}, ConverterParameter='1'}" FlowDirection="LeftToRight" HorizontalAlignment="Left" Visibility="Visible">
+
+                                    <Grid x:Name="grid_contactRead" Visibility="Visible">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=Contact.telephoneNumber}">
+                                                <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}">&#xE875;</TextBlock>
+                                                <TextBox Text="{Binding Contact.telephoneNumber}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=Contact.phoneNumberRaccourci}" Margin="24, 0, 0, 0" VerticalAlignment="Top">
+                                                <TextBox Text="{Binding Contact.phoneNumberRaccourci}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="14" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=Contact.mobile}">
+                                                <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}">&#xE97D;</TextBlock>
+                                                <TextBox Text="{Binding Contact.mobile}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=Contact.employeeNumber}" Margin="24, 0, 0, 0" VerticalAlignment="Top">
+                                                <TextBox Text="{Binding Contact.employeeNumber}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="14" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="True" BorderThickness="0" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource NullVisible}, Path=Contact.mail}">
+                                                <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}">&#xE807;</TextBlock>
+                                                <TextBlock>
+                                                    <Hyperlink NavigateUri="{Binding  Converter={StaticResource ValidMail}, Path=Contact.mail}" RequestNavigate="OnNavigate">
+                                                        <TextBlock Text="{Binding Contact.mail}" Grid.Column="1" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MinWidth="20" TextDecorations="Underline"/>
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="0,10" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                            <Button x:Name="btn_addFav" FontFamily="{StaticResource VoxyPolicyAssets}" Content="{Binding Converter={StaticResource FavIcon}, Path=IsFav}" Background="Transparent" Foreground="{StaticResource VoxySecondary}" Padding="0" BorderThickness="0" Click="btn_addFav_Click" Margin="0,0,0,0" VerticalAlignment="Top" Style="{StaticResource VoxyBtn}" FontSize="16"/>
+                                            <Button x:Name="btn_editContact" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE8A7;" Background="Transparent" Foreground="{StaticResource VoxySecondary}" Padding="0" BorderThickness="0" Click="btn_editContact_Click" Margin="0,0,0,0" VerticalAlignment="Top" Style="{StaticResource VoxyBtn}" FontSize="16"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel x:Name="sp_contactEdit" Visibility="Collapsed">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" VerticalAlignment="Center"  Margin="0,0,5,0" Foreground="{StaticResource VoxySecondary}">&#xE13D;</TextBlock>
+                                            <TextBox Grid.Column="1" x:Name="tbx_nameEdit" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="{Binding Converter={StaticResource EditAdmin}}" BorderThickness="{Binding Converter={StaticResource ThicknessEditAdmin}}" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <StackPanel>
+                                                            <AdornerDecorator x:Name="tbx_nameEdit"/>
+                                                            <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10" VerticalAlignment="Bottom"/>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="Contact.cn" UpdateSourceTrigger="PropertyChanged" >
+                                                        <Binding.ValidationRules>
+                                                            <local:TextBoxNotEmptyValidationRule x:Name="ContactNameValidation" ValidatesOnTargetUpdated="False" Message="Veuillez saisir un nom."/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center">&#xE875;</TextBlock>
+                                            <TextBox Grid.Column="1" x:Name="tbx_phoneEdit" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="{Binding Converter={StaticResource EditAdmin}}" BorderThickness="{Binding Converter={StaticResource ThicknessEditAdmin}}" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <StackPanel>
+                                                            <Border BorderThickness="0, 0, 0, 1" BorderBrush="red">
+                                                                <StackPanel>
+                                                                    <AdornedElementPlaceholder x:Name="tbx_phoneEdit"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                            <!--<AdornerDecorator x:Name="tbx_nameEdit"/>
+                                                                                <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10" VerticalAlignment="Bottom"/>-->
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="Contact.telephoneNumber" UpdateSourceTrigger="PropertyChanged" >
+                                                        <Binding.ValidationRules>
+                                                            <local:TextBoxNotEmptyPhoneValidationRule x:Name="ContactPhoneValidation" ValidatesOnTargetUpdated="False"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                                            <TextBox Grid.Column="1" x:Name="tbx_phoneRacEdit" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="14" FontFamily="{StaticResource VoxyPolicy}" MaxLength="25" MaxLines="1" IsReadOnly="{Binding Converter={StaticResource EditAdmin}}" BorderThickness="{Binding Converter={StaticResource ThicknessEditAdmin}}" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20" Margin="24, 0, 0, 0" VerticalAlignment="Top">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <StackPanel>
+                                                            <Border BorderThickness="0, 0, 0, 1" BorderBrush="red">
+                                                                <StackPanel>
+                                                                    <AdornedElementPlaceholder x:Name="tbx_phoneRacEdit"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="Contact.phoneNumberRaccourci" UpdateSourceTrigger="PropertyChanged" >
+                                                        <Binding.ValidationRules>
+                                                            <local:TextBoxRacPhoneValidationRule x:Name="ContactPhoneRacValidation" ValidatesOnTargetUpdated="False"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center">&#xE97D;</TextBlock>
+                                            <TextBox Grid.Column="1" x:Name="tbx_mobileEdit" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="{Binding Converter={StaticResource EditAdmin}}" BorderThickness="{Binding Converter={StaticResource ThicknessEditAdmin}}" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <Border BorderThickness="0, 0, 0, 1" BorderBrush="red">
+                                                            <StackPanel>
+                                                                <AdornedElementPlaceholder x:Name="tbx_mobileEdit"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="Contact.mobile" UpdateSourceTrigger="PropertyChanged" >
+                                                        <Binding.ValidationRules>
+                                                            <local:TextBoxPhoneValidationRule x:Name="ContactMobileValidation" ValidatesOnTargetUpdated="False"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBox Grid.Column="1" x:Name="tbx_mobileRacEdit" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="14" FontFamily="{StaticResource VoxyPolicy}" MaxLength="25" MaxLines="1" IsReadOnly="{Binding Converter={StaticResource EditAdmin}}" BorderThickness="{Binding Converter={StaticResource ThicknessEditAdmin}}" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20" Margin="24, 0, 0, 0" VerticalAlignment="Top">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <StackPanel>
+                                                            <Border BorderThickness="0, 0, 0, 1" BorderBrush="red">
+                                                                <StackPanel>
+                                                                    <AdornedElementPlaceholder x:Name="tbx_mobileRacEdit"/>
+                                                                </StackPanel>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="Contact.employeeNumber" UpdateSourceTrigger="PropertyChanged" >
+                                                        <Binding.ValidationRules>
+                                                            <local:TextBoxRacPhoneValidationRule x:Name="ContactMobileRacValidation" ValidatesOnTargetUpdated="False"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center">&#xE807;</TextBlock>
+                                            <TextBox Grid.Column="1" x:Name="tbx_mailEdit" Foreground="{StaticResource VoxySecondary}" Background="{x:Null}" FontSize="16" FontFamily="{StaticResource VoxyPolicy}" VerticalAlignment="Center" MaxLength="25" MaxLines="1" IsReadOnly="{Binding Converter={StaticResource EditAdmin}}" BorderThickness="{Binding Converter={StaticResource ThicknessEditAdmin}}" BorderBrush="{StaticResource VoxySecondary}" MinWidth="20">
+                                                <Validation.ErrorTemplate>
+                                                    <ControlTemplate>
+                                                        <StackPanel>
+                                                            <AdornedElementPlaceholder x:Name="tbx_mailEdit"/>
+                                                            <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10"/>
+                                                        </StackPanel>
+                                                    </ControlTemplate>
+                                                </Validation.ErrorTemplate>
+                                                <TextBox.Text>
+                                                    <Binding Path="Contact.mail" UpdateSourceTrigger="PropertyChanged" >
+                                                        <Binding.ValidationRules>
+                                                            <local:TextBoxMailValidationRule x:Name="ContactMailValidation" ValidatesOnTargetUpdated="False"/>
+                                                        </Binding.ValidationRules>
+                                                    </Binding>
+                                                </TextBox.Text>
+                                            </TextBox>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal"  Margin="0,10" HorizontalAlignment="Right">
+                                            <Button x:Name="btn_cancelContact" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE928;" Foreground="{StaticResource VoxyPrimary}" Background="{x:Null}" Padding="0" BorderThickness="0" Click="btn_cancelContact_Click" Margin="0" Style="{StaticResource VoxyBtn}" FontSize="16"/>
+                                            <Button x:Name="btn_validContact" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE98D;" Foreground="{StaticResource VoxyValid}" Background="{x:Null}" Padding="0" BorderThickness="0" Click="btn_validContact_Click" Margin="0">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource VoxyBtn}">
+                                                        <Setter Property="IsEnabled" Value="false" />
+                                                        <Setter Property="FontSize" Value="16"/>
+                                                        <Style.Triggers>
+                                                            <MultiDataTrigger>
+                                                                <MultiDataTrigger.Conditions>
+                                                                    <Condition Binding="{Binding ElementName=tbx_nameEdit, Path=(Validation.HasError)}" Value="false" />
+                                                                    <Condition Binding="{Binding ElementName=tbx_phoneEdit, Path=(Validation.HasError)}" Value="false" />
+                                                                    <Condition Binding="{Binding ElementName=tbx_phoneRacEdit, Path=(Validation.HasError)}" Value="false" />
+                                                                    <Condition Binding="{Binding ElementName=tbx_mobileEdit, Path=(Validation.HasError)}" Value="false" />
+                                                                    <Condition Binding="{Binding ElementName=tbx_mobileRacEdit, Path=(Validation.HasError)}" Value="false" />
+                                                                    <Condition Binding="{Binding ElementName=tbx_mailEdit, Path=(Validation.HasError)}" Value="false" />
+                                                                </MultiDataTrigger.Conditions>
+                                                                <Setter Property="IsEnabled" Value="true" />
+                                                            </MultiDataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                    <Button x:Name="btn_deleteContact" FontFamily="{StaticResource VoxyPolicyAssets}" Content="&#xE8C5;" Foreground="{StaticResource VoxyPrimary}" Background="{x:Null}" Padding="0" BorderThickness="0" Click="btn_deleteContact_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource VoxyBtn}" FontSize="16"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Expander>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Add Contact -->
+        <Grid Grid.Row="2" Visibility="{Binding Converter={StaticResource NullVisibleIsAdmin}}" Margin="10" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="btn_formAddUser" Click="btn_formAddUser_Click" Grid.Row="0"  Background="Transparent" BorderThickness="0" Margin="0,0,0,5" HorizontalAlignment="Center" Style="{StaticResource VoxyBtn}">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock x:Name="tb_btnFormAddUser" Text="&#xE98C;" FontSize="20" FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Visibility="Visible" Foreground="{StaticResource VoxyValid}" />
+                    <TextBlock Text="Ajouter un contact" FontSize="18" Foreground="{StaticResource VoxySecondary}"/>
+                </StackPanel>
+            </Button>
+            <Button x:Name="btn_importContacts" Click="btn_importContacts_Click" Grid.Row="0"  Background="Transparent" BorderThickness="0" Margin="0,0,0,5"  HorizontalAlignment="Right" Style="{StaticResource VoxyBtn}">
+                <Grid>
+                    <TextBlock Text="&#xE8C1;" FontSize="20" FontFamily="{StaticResource VoxyPolicyAssets}" Margin="5,0,5,0" HorizontalAlignment="Right" Visibility="Visible" Foreground="{StaticResource VoxySecondary}" />
+                    <TextBlock Text="&#xE88C;" FontSize="8" FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,13,2,0" HorizontalAlignment="Right" Visibility="Visible" Foreground="{StaticResource VoxySecondary}"/>
+                </Grid>
+            </Button>
+            <Grid x:Name="grid_formAddUser" Grid.Row="1" Margin="0,20,0,0" Visibility="Collapsed" HorizontalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.Resources>
+                            <Style TargetType="TextBox">
+                                <Setter Property="MinWidth" Value="100" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="0, 0, 0, 1" />
+                            </Style>
+                        </Grid.Resources>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*" MinWidth="100"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Labels -->
+                        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,5" HorizontalAlignment="Right" Grid.Column="0">
+                            <TextBlock Text="&#xE8A9;" FontSize="18" FontFamily="{StaticResource VoxyPolicyAssets}" Foreground="{StaticResource VoxyPrimary}" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Nom :" FontSize="18" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxyPrimary}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5" HorizontalAlignment="Right">
+                            <TextBlock Text="&#xE875;" FontSize="18" FontFamily="{StaticResource VoxyPolicyAssets}" Foreground="{StaticResource VoxyPrimary}" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Téléphone :" FontSize="18" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxyPrimary}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <TextBlock Text="Raccourci numéro :" FontSize="14" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0,0,0,5" HorizontalAlignment="Right">
+                            <TextBlock Text="&#xE97D;" FontSize="18" FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}"/>
+                            <TextBlock Text="Mobile :" FontSize="18" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="0,0,0,5" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <TextBlock Text="Raccourci mobile :" FontSize="14" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}"/>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="0,0,0,5" HorizontalAlignment="Right">
+                            <TextBlock Text="&#xE99E;" FontSize="18" FontFamily="{StaticResource VoxyPolicyAssets}" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}"/>
+                            <TextBlock Text="E-mail :" FontSize="18" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="{StaticResource VoxySecondary}"/>
+                        </StackPanel>
+
+                        <!-- Textbox validation -->
+                        <TextBox Name="tbx_addContactName" Grid.Column="1" Margin="5">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="tbx_addContactName"/>
+                                        <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10"/>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="cn" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxNotEmptyValidationRule x:Name="ContactNameValidation" ValidatesOnTargetUpdated="False" Message="Veuillez saisir un nom."/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Name="tbx_addContactPhone" Grid.Row="1" Grid.Column="1" Margin="5">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="tbx_addContactPhone"/>
+                                        <TextBlock Text="{Binding ErrorContent}" Foreground="Red" FontSize="10"/>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="telephoneNumber" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxNotEmptyPhoneValidationRule x:Name="ContactPhoneValidation" ValidatesOnTargetUpdated="False"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Name="tbx_addContactPhoneRac" Grid.Row="2" Grid.Column="1" Margin="5" FontSize="14" VerticalContentAlignment="Top" VerticalAlignment="Top">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="tbx_addContactPhoneRac"/>
+                                        <TextBlock Text="{Binding ErrorContent}" Foreground="Red" FontSize="10"/>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="phoneNumberRaccourci" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxRacPhoneValidationRule x:Name="racPhoneValidation" ValidatesOnTargetUpdated="False"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Name="tbx_addContactMobile" Grid.Row="3" Grid.Column="1" Margin="5">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="tbx_addContactMobile"/>
+                                        <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10"/>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="mobile" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxPhoneValidationRule x:Name="ContactMobileValidation" ValidatesOnTargetUpdated="False"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Name="tbx_addContactMobileRac" Grid.Row="4" Grid.Column="1" Margin="5" FontSize="14" VerticalContentAlignment="Top" VerticalAlignment="Top">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="tbx_addContactPhoneRac"/>
+                                        <TextBlock Text="{Binding ErrorContent}" Foreground="Red" FontSize="10"/>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="employeeNumber" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxRacPhoneValidationRule x:Name="racMobileValidation" ValidatesOnTargetUpdated="False"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                        <TextBox Name="tbx_addContactMail" Grid.Row="5" Grid.Column="1" Margin="5">
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <StackPanel>
+                                        <AdornedElementPlaceholder x:Name="tbx_addContactMail"/>
+                                        <TextBlock Text="{Binding [0].ErrorContent}" Foreground="Red" FontSize="10"/>
+                                    </StackPanel>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
+                            <TextBox.Text>
+                                <Binding Path="mail" UpdateSourceTrigger="PropertyChanged" >
+                                    <Binding.ValidationRules>
+                                        <local:TextBoxMailValidationRule x:Name="ContactMailValidation" ValidatesOnTargetUpdated="False"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </Grid>
+                    <Button x:Name="btn_addUser" Click="btn_addUser_Click" Grid.Row="2" Background="Transparent" Content="&#xE98C;" FontFamily="{StaticResource VoxyPolicyAssets}" FontSize="28" Foreground="{StaticResource VoxyValid}" BorderThickness="0" HorizontalAlignment="Center" Margin="15">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource VoxyBtn}">
+                                <Setter Property="IsEnabled" Value="false" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ElementName=tbx_addContactName, Path=(Validation.HasError)}" Value="false" />
+                                            <Condition Binding="{Binding ElementName=tbx_addContactPhone, Path=(Validation.HasError)}" Value="false" />
+                                            <Condition Binding="{Binding ElementName=tbx_addContactPhoneRac, Path=(Validation.HasError)}" Value="false" />
+                                            <Condition Binding="{Binding ElementName=tbx_addContactMobile, Path=(Validation.HasError)}" Value="false" />
+                                            <Condition Binding="{Binding ElementName=tbx_addContactMobileRac, Path=(Validation.HasError)}" Value="false" />
+                                            <Condition Binding="{Binding ElementName=tbx_addContactMail, Path=(Validation.HasError)}" Value="false" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="IsEnabled" Value="true" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

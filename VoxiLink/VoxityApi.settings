@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VoxiLink" GeneratedClassName="VoxityApi">
+  <Profiles />
+  <Settings>
+    <Setting Name="HOST" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">YourRedirectHost</Value>
+    </Setting>
+    <Setting Name="PORT" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">1234</Value>
+    </Setting>
+    <Setting Name="CLIENT_ID" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">XXXXXXXXXXXXXXXXXXXX</Value>
+    </Setting>
+    <Setting Name="CLIENT_SECRET" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">XXXXXXXXXXXXXXXXXXXX</Value>
+    </Setting>
+    <Setting Name="REFRESH_TOKEN" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>

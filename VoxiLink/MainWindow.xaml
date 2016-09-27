@@ -1,0 +1,234 @@
+﻿<Window x:Class="VoxiLink.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VoxiLink"
+        xmlns:HamburgerMenu="clr-namespace:HamburgerMenu;assembly=HamburgerMenu"
+        mc:Ignorable="d"
+        Title="VoxiLink" Height="700" Width="1200" Icon="Images/logo-voxity-client.png" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml" />
+                <ResourceDictionary>
+                    
+                    <local:NullToVisibilityConverter x:Key="NullVisible"/>
+                    <local:BooleanToCollapsedVisibilityConverter x:Key="BoolVisible"/>
+                    <local:MyBoolToVisibilityConverter x:Key="MyBoolToVisibility"/>
+                    
+                    <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabControl}">
+                                    <Grid KeyboardNavigation.TabNavigation="Local">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <TabPanel x:Name="HeaderPanel"
+                                Grid.Row="0"
+                                Panel.ZIndex="1"
+                                Margin="0,0,0,0"
+                                IsItemsHost="True"
+                                KeyboardNavigation.TabIndex="1"
+                                Background="transparent"/>
+                                        <Border x:Name="Border"
+                                Grid.Row="1"
+                                BorderThickness="0"
+                                KeyboardNavigation.TabNavigation="Local"
+                                KeyboardNavigation.DirectionalNavigation="Contained"
+                                KeyboardNavigation.TabIndex="2"
+                                BorderBrush="{StaticResource VoxyPrimary}"
+                                Background="{StaticResource VoxyBackground}">
+
+                                            <ContentPresenter x:Name="PART_SelectedContentHost" Margin="0" ContentSource="SelectedContent" />
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+
+                    <Style x:Key="dgFocusVisualStyte" >
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Border x:Name="FocusStyle" Background="#4433b4ed" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style x:Key="TabItemStyle" TargetType="{x:Type TabItem}">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="FontFamily" Value="{StaticResource VoxyPolicy}"/>
+                        <Setter Property="Foreground" Value="{StaticResource VoxyPrimary}"/>
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource dgFocusVisualStyte}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TabItem}">
+
+                                    <Grid x:Name="Root">
+                                        <Grid.ColumnDefinitions>
+                                            <!-- 3 items headers so, we give (parent width * 0,nb of item header) -->
+                                            <ColumnDefinition Width="{Binding ActualWidth, ElementName=grid_contact, Converter={local:ItemHeader}, ConverterParameter='0,333333333333333333333333'}" MinWidth="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="6" />
+                                        </Grid.RowDefinitions>
+                                        <Border x:Name="Border"  Margin="0,0,0,0" Background="{StaticResource VoxyBackground}">
+                                            <ContentPresenter x:Name="ContentSite"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+                                          ContentSource="Header"
+                                          Margin="10,10,10,4"
+                                          RecognizesAccessKey="True"/>
+                                        </Border>
+
+                                        <Border Grid.Row="1" Background="{StaticResource VoxyBackground}"/>
+                                        <Border Grid.Row="1" Name="Border1Highlited" Background="Transparent"/>
+
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Panel.ZIndex" Value="100" />
+                                            <Setter TargetName="Border1Highlited" Property="Background" Value="{StaticResource VoxyPrimary}" />
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground" Value="#cccccc" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource VoxyBackground}">
+        
+        <Image Source="Images/bg.jpg" Stretch="UniformToFill" />
+        
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*" MinWidth="800"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" MinWidth="240"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Main -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Background="{StaticResource VoxyBackground}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--<Image Source="Images/logo-voxity-client.png" Width="50" HorizontalAlignment="Left" Grid.Column="0" Margin="5,0" />-->
+                    <Label Grid.Column="1" Content="{Binding Path=UserName}" ContentStringFormat="Bonjour {0}, ravi de vous revoir !" Style="{StaticResource VoxyCtrlHeaderS}"/>
+
+                    <Grid Grid.Column="1" HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Stretch">
+                            <TextBlock Text="01 23 45 67 89" Margin="8,0" MinWidth="50" Foreground="{StaticResource VoxySecondary}" Opacity="0.6" Visibility="{Binding ElementName=tbx_phone, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibility}}" Style="{StaticResource VoxyTbMediumS}"/>
+                            <TextBox x:Name="tbx_phone" Padding="5,0,0,0" Width="160" MaxLines="1" MinLines="1" MaxLength="25" CharacterCasing="Lower" Style="{StaticResource VoxyCtrlMediumS}"/>
+                        </Grid>
+
+                        <Button x:Name="btn_call" Grid.Column="2" Content="&#xE875;" Padding="10,1" BorderThickness="0" Foreground="{StaticResource VoxyValid}" FontFamily="{StaticResource VoxyPolicyAssets}" FontSize="18" Style="{StaticResource VoxyBtn}"/>
+                        <Button x:Name="btn_sms" Grid.Column="3" Content="&#xE820;" Padding="10,1" Click="btn_sms_Click" FontFamily="{StaticResource VoxyPolicyAssets}" FontSize="18" Style="{StaticResource VoxyBtn}"/>
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Row="1" x:Name="grid_mainContent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="1" Margin="0, 0, 0, 0">
+                        <local:Logs x:Name="logs" Visibility="Visible"/>
+                        <local:SMS x:Name="sms" Visibility="Collapsed"/>
+                        <local:Settings x:Name="settings" Visibility="Collapsed"/>
+                        <local:Import x:Name="import" Visibility="Collapsed"/>
+                    </Grid>
+                    <Grid Grid.Column="0" x:Name="grid_content">
+                        <HamburgerMenu:HamburgerMenu Background="{StaticResource VoxyBackground}" MenuIconColor="{StaticResource VoxyPrimary}" SelectionIndicatorColor="{StaticResource VoxyPrimary}" MenuItemForeground="{StaticResource VoxyPrimary}" HorizontalAlignment="Left" Foreground="{StaticResource VoxyPrimary}">
+                            <HamburgerMenu:HamburgerMenu.Content>
+                                <HamburgerMenu:HamburgerMenuItem Icon="Images/icon_jnlApl2.png" Text="Journal d'appels" SelectionCommand="{Binding ElementName=logs}"/>
+                                <HamburgerMenu:HamburgerMenuItem Icon="Images/icon_SMS2.png" Text="SMS" SelectionCommand="{Binding ElementName=sms}"/>
+                                <HamburgerMenu:HamburgerMenuItem Icon="Images/icon_param2.png" Text="Paramètres" SelectionCommand="{Binding ElementName=settings}"/>
+                            </HamburgerMenu:HamburgerMenu.Content>
+                        </HamburgerMenu:HamburgerMenu>
+                    </Grid>
+
+                    <!--<Label Content="Mes appels" FontSize="24" FontFamily="Segoe UI Light" Foreground="#FFE56731" Margin="50, -2, 0, 0"/>-->
+
+                    <Border x:Name="grid_SMS" Grid.Column="1" Width="238" Height="120" Visibility="Collapsed" BorderBrush="{StaticResource VoxySecondary}" BorderThickness="1,0,1,1"
+                            HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource VoxyBackground}">
+                        <Grid Background="{StaticResource VoxyBackground}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ScrollViewer Grid.Row="0">
+                                <TextBox x:Name="tbx_sms" AcceptsReturn="True" BorderThickness="0,0,1,1" MaxLines="20" TextWrapping="Wrap" BorderBrush="{StaticResource VoxySecondary}" Style="{StaticResource VoxyCtrlS}"/>
+                            </ScrollViewer>
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" Content="Émetteur : " VerticalAlignment="Center" Style="{StaticResource VoxyCtrlS}"/>
+                                    <TextBox Grid.Column="1" x:Name="tbx_emitter" BorderThickness="0,0,0,1" MaxLength="11" MaxLines="1" VerticalAlignment="Center" Style="{StaticResource VoxyCtrlS}"/>
+                                </Grid>
+                                <Button x:Name="btn_sendSms" Grid.Column="1" Content="&#xE931;" FontSize="18" Padding="10" BorderThickness="0" Margin="10,0,0,0" Foreground="White" Click="btn_sendSms_Click" FontFamily="{StaticResource VoxyPolicyAssets}" Background="{StaticResource VoxyValid}" Style="{StaticResource VoxyBtn}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Stretch" Background="{StaticResource VoxyBackground}"/>
+            
+            <!-- Lists -->
+            <Grid x:Name="grid_contact" Grid.Column="2">
+                
+                <TabControl Style="{StaticResource TabControlStyle}">
+                    
+                    <TabItem Style="{StaticResource TabItemStyle}" Header="Favoris">
+                        <local:Fav x:Name="uc_fav"/>
+                    </TabItem>
+                    
+                    <TabItem Style="{StaticResource TabItemStyle}" Header="Tous">
+                        <local:AllContacts x:Name="uc_allContacts"/>
+                    </TabItem>
+                    
+                    <TabItem Style="{StaticResource TabItemStyle}" Header="Lignes">
+                        <local:AllDevices/>
+                    </TabItem>
+                    
+                </TabControl>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

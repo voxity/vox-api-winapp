@@ -1,0 +1,26 @@
+﻿<Window x:Class="VoxiLink.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VoxiLink"
+        mc:Ignorable="d"
+        Title="VoxiLink" Height="700" Width="400" WindowStartupLocation="CenterScreen" Background="#FFF8F8F8" Icon="Images/logo-voxity-client.png" ResizeMode="NoResize">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes\Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Image x:Name="image" Source="Images/logo-voxity.png" HorizontalAlignment="Center" Height="62" Margin="72,61,98,546" VerticalAlignment="Center" Width="222"/>
+        <Rectangle Fill="#FFF8F8F8" Margin="152,44,60,528"/>
+        <Label x:Name="label1" Content="Voxi" HorizontalAlignment="Left" Margin="154,40,0,0" VerticalAlignment="Top" FontSize="42" FontFamily="Segoe UI Light"/>
+        <Label x:Name="label2" Content="Link" HorizontalAlignment="Left" Margin="226,55,0,0" VerticalAlignment="Top" FontSize="42" Foreground="#FFE53C21" FontFamily="Segoe UI Light"/>
+        <TextBlock x:Name="textBlock_Copy1" HorizontalAlignment="Center" Margin="10,260,10,0" TextWrapping="Wrap" Text="Bonjour," VerticalAlignment="Top" Width="422" TextAlignment="Center" FontFamily="Segoe UI Light" FontSize="24"/>
+        <TextBlock x:Name="textBlock_Copy" HorizontalAlignment="Center" Margin="10,300,10,0" TextWrapping="Wrap" Text="Afin de profiter pleinement du service Voxity, nous vous invitons à vous connecter en ligne dès maintenant !" VerticalAlignment="Top" Width="350" TextAlignment="Center" FontFamily="Segoe UI Light" FontSize="14"/>
+        <Button Content="Découvrir VoxiLink" Width="200" Height="50" VerticalAlignment="Bottom" Margin="0,0,0,50" Foreground="#FFE53C21" FontSize="24" Style="{StaticResource VoxyBtn}" Click="Button_Click"/>
+    </Grid>
+</Window>

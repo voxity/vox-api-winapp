@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="VoxiLink.Settings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VoxiLink"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\..\Themes\Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid x:Name="grid_Settings">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Content="Mes paramètres" FontSize="24" FontFamily="Segoe UI Light" Foreground="#FFE56731" Margin="0, -2, 0, 0"/>
+            <Grid Grid.Row="1" Margin="25,20" x:Name="grid_sms">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderThickness="0,0,0,15">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Touche de raccourcis :" FontSize="16" FontFamily="Segoe UI Light" Foreground="{StaticResource VoxySecondary}"/>
+                        <TextBox x:Name="ShortcutTextBox" Padding="4,0" Height="20" VerticalContentAlignment="Center" PreviewKeyDown="ShortcutTextBox_PreviewKeyDown" PreviewKeyUp="ShortcutTextBox_PreviewKeyUp" />
+                    </StackPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <CheckBox x:Name="hideCb" VerticalAlignment="Center" Checked="hideCb_Checked" Unchecked="CheckBox_Unchecked"/>
+                    <Label Content="Réduire dans la barre des tâches" FontSize="16" FontFamily="Segoe UI Light" Foreground="{StaticResource VoxySecondary}"/>
+                </StackPanel>
+                <!--<Border BorderThickness="0,0,0,20" Grid.Row="2">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox VerticalAlignment="Center" />
+                        <Label Content="Afficher dans la barre des tâches" FontSize="16" FontFamily="Segoe UI Light" Foreground="{StaticResource VoxySecondary}"/>
+                    </StackPanel>
+                </Border>-->
+                <Border BorderThickness="0,0,0,20" Grid.Row="3">
+                    <StackPanel Orientation="Horizontal" Visibility="Collapsed">
+                        <CheckBox VerticalAlignment="Center" />
+                        <Label Content="Lancer au démarrage de Windows" FontSize="16" FontFamily="Segoe UI Light" Foreground="{StaticResource VoxySecondary}"/>
+                    </StackPanel>
+                </Border>
+                <Button x:Name="SaveParamsBtn" Grid.Row="4" Content="Enregistrer les paramètres" Height="20" HorizontalAlignment="Right" Click="SaveParamsBtn_Click"/>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</UserControl>
